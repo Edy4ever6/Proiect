@@ -1,0 +1,73 @@
+project_folder/
+│
+├── app.py
+├── templates/
+│   └── login.html
+└── static/
+    └── images/
+        └── logo.png 
+
+from flask import Flask, render_template, request, redirect, url_for, flash
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # For session and flash messaging
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Replace with actual user validation logic
+        if username == 'admin' and password == 'password123':
+            flash('Login successful!', 'success')
+            return redirect(url_for('welcome'))
+        else:
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+@app.route('/welcome')
+def welcome():
+    return "<h1>Welcome to the dashboard!</h1>"
+
+if __name__ == '__main__':
+    app.run(debug=True)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 h-screen flex justify-center items-center">
+
+    <!-- Container for the login box -->
+    <div class="flex w-full max-w-4xl bg-white shadow-xl rounded-lg overflow-hidden">
+        <!-- Left section with form -->
+        <div class="w-1/2 p-10 flex flex-col justify-center">
+            <h2 class="text-3xl font-bold text-center mb-6">Login</h2>
+            <form action="/login" method="post">
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" id="username" name="username" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+            </form>
+        </div>
+
+        <!-- Right section with logo -->
+        <div class="w-1/2 bg-gray-100 flex justify-center items-center">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-3/4 max-w-[300px]">
+        </div>
+    </div>
+
+</body>
+</html>
